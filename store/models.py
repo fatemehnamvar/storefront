@@ -2,18 +2,24 @@ from django.db import models
 
 # Create your models here.
 
-class Product(models.Model):
-    sku = models.CharField(max_length=10, primary_key=True)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-    inventory = models.IntegerField()
-    last_update = models.DateTimeField(auto_now=True)
-    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+class Promotion(models.Model):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField()
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
+    featured_product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
 
+class Product(models.Model):
+    sku = models.CharField(max_length=10, primary_key=True)
+    title = models.CharField(max_length=255)
+    slug = models.SlugField()
+    description = models.TextField()
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
+    inventory = models.IntegerField()
+    last_update = models.DateTimeField(auto_now=True)
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    promotion = models.ManyToManyField(Promotion)
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE= 'B'
@@ -32,9 +38,9 @@ class Customer(models.Model):
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
 class Order(models.Model):
-    PENDING_STATUS = 'P'
-    COMPLETE_STATUS = 'C'
-    FAILED_STATUS = 'F'
+    PAYMENT_STATUS_PENDING = 'P'
+    PAYMENT_STATUS_COMPLETE = 'C'
+    PAYMENT_STATUS_FAILED = 'F'
 
     PAYMENT_STATUS_CHOICES = [
         (PAYMENT_STATUS_PENDING, "Pending"),
@@ -60,6 +66,7 @@ class Address(models.Model):
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
-class CartItem(models):
+class CartItem(models.Model):
      cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
      product = models.ForeignKey(Product, on_delete = models.CASCADE)
+     quantity = models.PositiveSmallIntegerField()
