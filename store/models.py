@@ -37,6 +37,14 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
+
+    class Meta:
+        db_table = 'store_customers'
+        indexes = [
+            models.Index(fields=['last_name','first_name'])
+        ]
+
+
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
     PAYMENT_STATUS_COMPLETE = 'C'
@@ -62,6 +70,7 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    zip_code = models.CharField(max_length=255)
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
