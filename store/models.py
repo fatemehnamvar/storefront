@@ -2,20 +2,17 @@ from django.db import models
 
 # Create your models here.
 
-<<<<<<< HEAD
 
-class Collection(models.Model):
-    title = models.CharField(max_length=255)
-
-=======
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
 
+
 class Collection(models.Model):
     title = models.CharField(max_length=255)
-    featured_product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
->>>>>>> 7039599892a4345326abb73ecb63b8c0428f2708
+    featured_product = models.ForeignKey(
+        "Product", on_delete=models.SET_NULL, null=True, related_name="+")
+
 
 class Product(models.Model):
     sku = models.CharField(max_length=10, primary_key=True)
@@ -26,11 +23,8 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
-<<<<<<< HEAD
+    promotions = models.ManyToManyField(Promotion)
 
-=======
-    promotion = models.ManyToManyField(Promotion)
->>>>>>> 7039599892a4345326abb73ecb63b8c0428f2708
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = 'B'
@@ -49,12 +43,10 @@ class Customer(models.Model):
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
-
-
     class Meta:
         db_table = 'store_customers'
         indexes = [
-            models.Index(fields=['last_name','first_name'])
+            models.Index(fields=['last_name', 'first_name'])
         ]
 
 
@@ -91,14 +83,8 @@ class Address(models.Model):
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
-<<<<<<< HEAD
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-=======
-class CartItem(models.Model):
-     cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
-     product = models.ForeignKey(Product, on_delete = models.CASCADE)
-     quantity = models.PositiveSmallIntegerField()
->>>>>>> 7039599892a4345326abb73ecb63b8c0428f2708
+    quantity = models.PositiveSmallIntegerField()
