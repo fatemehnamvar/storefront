@@ -2,20 +2,35 @@ from django.db import models
 
 # Create your models here.
 
+<<<<<<< HEAD
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
 
+=======
+class Promotion(models.Model):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField()
+
+class Collection(models.Model):
+    title = models.CharField(max_length=255)
+    featured_product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
+>>>>>>> 7039599892a4345326abb73ecb63b8c0428f2708
 
 class Product(models.Model):
     sku = models.CharField(max_length=10, primary_key=True)
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+<<<<<<< HEAD
 
+=======
+    promotion = models.ManyToManyField(Promotion)
+>>>>>>> 7039599892a4345326abb73ecb63b8c0428f2708
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = 'B'
@@ -33,6 +48,14 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True)
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
+
+
+
+    class Meta:
+        db_table = 'store_customers'
+        indexes = [
+            models.Index(fields=['last_name','first_name'])
+        ]
 
 
 class Order(models.Model):
@@ -62,12 +85,20 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    zip_code = models.CharField(max_length=255)
 
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
+<<<<<<< HEAD
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+=======
+class CartItem(models.Model):
+     cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
+     product = models.ForeignKey(Product, on_delete = models.CASCADE)
+     quantity = models.PositiveSmallIntegerField()
+>>>>>>> 7039599892a4345326abb73ecb63b8c0428f2708
