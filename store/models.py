@@ -2,13 +2,17 @@ from django.db import models
 
 # Create your models here.
 
+
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
 
+
 class Collection(models.Model):
     title = models.CharField(max_length=255)
-    featured_product = models.ForeignKey("Product", on_delete=models.SET_NULL, null=True, related_name="+")
+    featured_product = models.ForeignKey(
+        "Product", on_delete=models.SET_NULL, null=True, related_name="+")
+
 
 class Product(models.Model):
     sku = models.CharField(max_length=10, primary_key=True)
@@ -19,12 +23,13 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
-    promotion = models.ManyToManyField(Promotion)
+    promotions = models.ManyToManyField(Promotion)
+
 
 class Customer(models.Model):
-    MEMBERSHIP_BRONZE= 'B'
-    MEMBERSHIP_SILVER= 'S'
-    MEMBERSHIP_GOLD= 'G'
+    MEMBERSHIP_BRONZE = 'B'
+    MEMBERSHIP_SILVER = 'S'
+    MEMBERSHIP_GOLD = 'G'
     MEMBERSHIP_CHOICES = [
         (MEMBERSHIP_BRONZE, 'Bronze'),
         (MEMBERSHIP_SILVER, 'Silver'),
@@ -35,13 +40,13 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=255)
     birth_date = models.DateField(null=True)
-    membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
-
+    membership = models.CharField(
+        max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
     class Meta:
         db_table = 'store_customers'
         indexes = [
-            models.Index(fields=['last_name','first_name'])
+            models.Index(fields=['last_name', 'first_name'])
         ]
 
 
@@ -52,12 +57,14 @@ class Order(models.Model):
 
     PAYMENT_STATUS_CHOICES = [
         (PAYMENT_STATUS_PENDING, "Pending"),
-        (PAYMENT_STATUS_COMPLETE,"Complete"),
+        (PAYMENT_STATUS_COMPLETE, "Complete"),
         (PAYMENT_STATUS_FAILED, "Failed")
     ]
     palced_at = models.DateTimeField(auto_now_add=True)
-    payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
+    payment_status = models.CharField(
+        max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
@@ -72,10 +79,12 @@ class Address(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     zip_code = models.CharField(max_length=255)
 
+
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
+
 class CartItem(models.Model):
-     cart = models.ForeignKey(Cart, on_delete = models.CASCADE)
-     product = models.ForeignKey(Product, on_delete = models.CASCADE)
-     quantity = models.PositiveSmallIntegerField()
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField()
