@@ -1,8 +1,10 @@
+
 from django.shortcuts import render
-from django.http import HttpResponse
-# Create your views here.
+from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
+from store.models import Product, Collection, Order, OrderItem
+
 
 def say_hello(request):
-    x = 1
-    y = 2
-    return render(request, 'hello.html', {'name':'fatemehnamvar'})
+
+    return render(request, 'hello.html', {'name': 'Mosh'})
